@@ -1,13 +1,15 @@
 from config import Database
+from classes.reader import Reader
 
 def main():
     db = Database()
     db.test_connection()
 
-    test_record = {
-        "title": "hi"
-    }
-    db.insert_record(test_record)
+    reader = Reader("sample.xml")
+    products = reader.parse_xml()
+
+    for product in products:
+        db.insert_record(product)
 
     db.close()
 
