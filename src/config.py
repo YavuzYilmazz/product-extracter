@@ -1,6 +1,7 @@
 from pymongo import MongoClient
 from dotenv import load_dotenv
 from classes.product import Product
+from datetime import datetime
 import os
 
 load_dotenv()
@@ -18,9 +19,24 @@ class Database:
     def insert_record(self, record):
         if isinstance(record, Product):
             record = record.to_dict()
-        result = self.collection.insert_one(record)
 
-        print(f"Record inserted with ID: {result.inserted_id}")
+        # Use stock_code to check if the product already exists
+        existing_product = self.collection.find_one({"stock_code": record["stock_code"]})
+
+        if existing_product:
+            # Update the existing product but only change updatedAt and other specified fields
+            record["updatedAt"] = datetime.now()  # Set updatedAt to the current time
+            self.collection.update_one(
+                {"stock_code": record["stock_code"]},
+                {"$set": record}  # Update all fields, including updatedAt
+            )
+            print(f"Updated product with stock_code: {record['stock_code']}, updatedAt set to current time.")
+        else:
+            # Insert a new record
+            record["createdAt"] = datetime.now()  # Set createdAt for new records
+            self.collection.insert_one(record)
+            print(f"Inserted new product with stock_code: {record['stock_code']}")
+
 
     def test_connection(self):
         try:

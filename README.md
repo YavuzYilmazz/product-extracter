@@ -211,7 +211,10 @@ product-extracter/
 
 Here are some examples of product images:
 
-![Blazer Image 1](img/Terminal.png)
 ![Blazer Image 2](img/Database.png)
+
+![Blazer Image 1](img/Inserted.png)
+
+![Blazer Image 2](img/Updated.png)
 
 The images above are samples of the products stored in the database.
