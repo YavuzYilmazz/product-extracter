@@ -34,6 +34,7 @@ class Database:
         else:
             # Insert a new record
             record["createdAt"] = datetime.now()  # Set createdAt for new records
+            record["updatedAt"] = datetime.now()
             self.collection.insert_one(record)
             print(f"Inserted new product with stock_code: {record['stock_code']}")
 
