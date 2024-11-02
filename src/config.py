@@ -5,13 +5,15 @@ import os
 
 load_dotenv()
 
-mongo_uri = os.getenv("MONGO_URI")
+MONGO_URI = os.getenv("MONGO_URI")
+DATABASE_NAME = os.getenv("DATABASE_NAME")
+COLLECTION_NAME = os.getenv("COLLECTION_NAME")
 
 class Database:
-    def __init__(self, db_name="lonca"):
-        self.client = MongoClient(mongo_uri)
+    def __init__(self, db_name=DATABASE_NAME):
+        self.client = MongoClient(MONGO_URI)
         self.db = self.client[db_name]
-        self.collection = self.db['products']
+        self.collection = self.db[COLLECTION_NAME]
 
     def insert_record(self, record):
         if isinstance(record, Product):
