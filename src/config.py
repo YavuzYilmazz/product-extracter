@@ -16,27 +16,33 @@ class Database:
         self.db = self.client[db_name]
         self.collection = self.db[COLLECTION_NAME]
 
+
     def insert_record(self, record):
-        if isinstance(record, Product):
-            record = record.to_dict()
+            if isinstance(record, Product):
+                record = record.to_dict()
 
-        # Use stock_code to check if the product already exists
-        existing_product = self.collection.find_one({"stock_code": record["stock_code"]})
+            # Use stock_code to check if the product already exists
+            existing_product = self.collection.find_one({"stock_code": record["stock_code"]})
 
-        if existing_product:
-            # Update the existing product but only change updatedAt and other specified fields
-            record["updatedAt"] = datetime.now()  # Set updatedAt to the current time
-            self.collection.update_one(
-                {"stock_code": record["stock_code"]},
-                {"$set": record}  # Update all fields, including updatedAt
-            )
-            print(f"Updated product with stock_code: {record['stock_code']}, updatedAt set to current time.")
-        else:
-            # Insert a new record
-            record["createdAt"] = datetime.now()  # Set createdAt for new records
-            record["updatedAt"] = datetime.now()
-            self.collection.insert_one(record)
-            print(f"Inserted new product with stock_code: {record['stock_code']}")
+            if existing_product:
+                # Prepare the update without modifying createdAt
+                update_fields = {
+                    key: record[key] for key in record 
+                    if key not in ["createdAt"]  # Exclude createdAt from the update
+                }
+                update_fields["updatedAt"] = datetime.now()  # Set updatedAt to current time
+
+                self.collection.update_one(
+                    {"stock_code": record["stock_code"]},
+                    {"$set": update_fields}  # Update fields except createdAt
+                )
+                print(f"Updated product with stock_code: {record['stock_code']}, updatedAt set to current time.")
+            else:
+                # Insert a new record
+                record["createdAt"] = datetime.now()  # Set createdAt for new records
+                record["updatedAt"] = datetime.now()  # Set updatedAt for new records
+                self.collection.insert_one(record)
+                print(f"Inserted new product with stock_code: {record['stock_code']}")
 
 
     def test_connection(self):
