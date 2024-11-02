@@ -1,5 +1,6 @@
 from pymongo import MongoClient
 from dotenv import load_dotenv
+from classes.product import Product
 import os
 
 load_dotenv()
@@ -13,7 +14,10 @@ class Database:
         self.collection = self.db['products']
 
     def insert_record(self, record):
+        if isinstance(record, Product):
+            record = record.to_dict()
         result = self.collection.insert_one(record)
+
         print(f"Record inserted with ID: {result.inserted_id}")
 
     def test_connection(self):
