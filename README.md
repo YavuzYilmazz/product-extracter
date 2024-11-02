@@ -211,7 +211,7 @@ product-extracter/
 
 Here are some examples of product images:
 
-![Blazer Image 2](img/Database.png)
+![Blazer Image 3](img/Db.png)
 
 ![Blazer Image 1](img/Inserted.png)
 
